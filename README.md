@@ -1,1 +1,1 @@
-n-puzzle
+Project - n-puzzle solver (java implementation)
