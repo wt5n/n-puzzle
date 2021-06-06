@@ -1,13 +1,16 @@
 package ru.school21;
 
+import lombok.Data;
+
+@Data
 public class Puzzle {
 	private String puzzleString;
+	private int timeComplexity;
+	private int sizeComplexity;
+	private int numberOfMoves;
+	private StringBuilder solution;
 
 	public Puzzle(String puzzleString) {
-		this.puzzleString = puzzleString;
-	}
-
-	public void setPuzzleString(String puzzleString) {
 		this.puzzleString = puzzleString;
 	}
 
@@ -16,8 +19,8 @@ public class Puzzle {
 	}
 
 	public String solvePuzzle() {
-		StringBuilder solve = new StringBuilder("Test");
 
-		return solve.toString();
+		return "Test";
 	}
+
 }
