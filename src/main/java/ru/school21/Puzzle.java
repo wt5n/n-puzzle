@@ -20,7 +20,7 @@ public class Puzzle {
 
 	public String solvePuzzle() {
 
-		return "Test";
+		return "NoTest";
 	}
 
 }
