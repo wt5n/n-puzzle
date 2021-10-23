@@ -1,35 +1,118 @@
-package ru.school21;
+import java.util.ArrayList;
+import java.util.Objects;
 
-import java.util.PriorityQueue;
+public class Puzzle implements Cloneable {
 
-import lombok.Data;
+    private ArrayList<Integer> board;
+//    final private ArrayList<Integer> end;
+    final private int size;
+    final private int edge;
+    private int g = 0;
 
-@Data
-public class Puzzle {
-	private String puzzleString;
-	private int timeComplexity;
-	private int sizeComplexity;
-	private int numberOfMoves;
-	private StringBuilder solution;
-	private PriorityQueue<String> map;
-	private String testUnsolve = "# This puzzle is unsolvable\n" + "4\n" + "12  1  4 15 \n" + " 0 13  6  7 \n" +
-			" 9  2 11  5 \n" + " 3  8 14 10 ";
-	private String testSolve = "# This puzzle is solvable\n" + "4\n" + "10  7  1 12 \n" + "13 14  3 11 \n" +
-			" 6  9  8  2 \n" + " 5 15  0  4 ";
+    public void setBoard(ArrayList<Integer> board) {
+        this.board = board;
+    }
 
-	public Puzzle(String puzzleString) {
-		this.puzzleString = puzzleString;
-	}
+    private int f = 0;
+    private int e = 0;
+    private Puzzle prev;
 
-	public boolean verifyPuzzle() {
-		return true;
-	}
+    public Puzzle (ArrayList<Integer> board, int size, int edge, int g) {
+        this.board = board;
+//        this.end = end;
+        this.size = size;
+        this.edge = edge;
+        this.g = g;
+        this.prev = prev;
+    }
 
-	public String solvePuzzle() {
-		return "Test";
-	}
+    public ArrayList<Integer> getBoard() {
+        return board;
+    }
 
-	private void convertToList() {
-//		map = puzzleString;
-	}
+    public Puzzle getPrev() {
+        return prev;
+    }
+
+    public void setPrev(Puzzle prev) {
+        this.prev = prev;
+    }
+
+    public int getG() {
+        return g;
+    }
+
+    public void setG(int g) {
+        this.g = g;
+    }
+
+    public int getF() {
+        return f;
+    }
+
+    public void setF(int f) {
+        this.f = f;
+    }
+
+    public int getE() {
+        return e;
+    }
+
+    public void setE() {
+        this.e = g + f;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public int getEdge() {
+        return edge;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder res = new StringBuilder();
+        for (Integer i:this.board)
+            res.append(i.toString());
+        return res.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Puzzle puzzle = (Puzzle) o;
+        return Objects.equals(board, puzzle.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(board);
+    }
+
+    public void pprint() {
+        System.out.println("-------------------");
+        for (int i = 1; i <= this.size; i++) {
+            System.out.printf("%2d ", this.getBoard().get(i - 1));
+            if (i % this.edge == 0)
+                System.out.println();
+        }
+        System.out.println("-------------------");
+    }
+
+    @Override
+    public Puzzle clone() {
+        try {
+            Puzzle clone = (Puzzle) super.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            ArrayList<Integer> cloneBoard = new ArrayList<>(getBoard());
+            clone.setBoard(cloneBoard);
+//            for (int i = 0; i < this.getSize(); i++)
+//                clone.board[i] = this.getBoard().get(i);
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }
