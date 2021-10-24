@@ -1,6 +1,8 @@
-public class ManhattenDistance {
+package ru.school21;
 
-    public static int getData (Puzzle start) {
+public class Heuristics {
+
+    public static int manhattanDistance(Puzzle start) {
         int res = 0;
         for (int i = 0; i < start.getSize(); i++) {
             if (start.getBoard().get(i) != 0) {
@@ -9,5 +11,13 @@ public class ManhattenDistance {
             }
         }
         return res;
+    }
+
+    public static int secondHeuristic() {
+        return 2;
+    }
+
+    public static int thirdHeuristic() {
+        return 3;
     }
 }

@@ -1,21 +1,24 @@
+package ru.school21;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Puzzle implements Cloneable {
 
-    private ArrayList<Integer> board;
+    ArrayList<Integer> board;
 //    final private ArrayList<Integer> end;
-    final private int size;
-    final private int edge;
-    private int g = 0;
-
-    public void setBoard(ArrayList<Integer> board) {
-        this.board = board;
-    }
-
-    private int f = 0;
-    private int e = 0;
-    private Puzzle prev;
+    final int size;
+    final int edge;
+    int g;
+    int f = 0;
+    int e = 0;
+    Puzzle prev;
 
     public Puzzle (ArrayList<Integer> board, int size, int edge, int g) {
         this.board = board;
@@ -23,51 +26,10 @@ public class Puzzle implements Cloneable {
         this.size = size;
         this.edge = edge;
         this.g = g;
-        this.prev = prev;
-    }
-
-    public ArrayList<Integer> getBoard() {
-        return board;
-    }
-
-    public Puzzle getPrev() {
-        return prev;
-    }
-
-    public void setPrev(Puzzle prev) {
-        this.prev = prev;
-    }
-
-    public int getG() {
-        return g;
-    }
-
-    public void setG(int g) {
-        this.g = g;
-    }
-
-    public int getF() {
-        return f;
-    }
-
-    public void setF(int f) {
-        this.f = f;
-    }
-
-    public int getE() {
-        return e;
     }
 
     public void setE() {
         this.e = g + f;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public int getEdge() {
-        return edge;
     }
 
     @Override

@@ -1,10 +1,12 @@
+package ru.school21;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class AStar {
+public class Algorithms {
 
-    public static Puzzle start(Puzzle start, String end) {
+    public static Puzzle aStar(Puzzle start, String end) {
 
         ArrayList<Integer> closed = new ArrayList<>(); // states already selected by the program , compared to the solution and expanded
         PriorityQueue<Puzzle> opened = new PriorityQueue<>(Comparator.comparing(Puzzle::getE));
