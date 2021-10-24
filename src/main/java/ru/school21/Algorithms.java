@@ -22,14 +22,31 @@ public class Algorithms {
             }
             closed.add(cur.hashCode());
             iter++;
-            for (Puzzle e: findNeighbours.getNeighbourds(cur)) {
-//                if (closed.contains(e.hashCode()))
-//                    System.out.println("!");
-                if (!closed.contains(e.hashCode())){
-                    opened.add(e);
-                }
-            }
+            //                if (closed.contains(e.hashCode()))
+            //                    System.out.println("!");
+            checkMoves(cur).stream().filter(e -> !closed.contains(e.hashCode())).forEach(opened::add);
         }
         return null;
+    }
+
+    private static ArrayList<Puzzle> checkMoves(Puzzle puzzle) {
+
+        ArrayList<Puzzle> res = new ArrayList<>();
+
+        int zeroCoordinate = puzzle.getBoard().indexOf(0);
+
+        if (!((zeroCoordinate + 1) % puzzle.getEdge() == 0)) {
+            Placement.right(puzzle, res, zeroCoordinate);
+        }
+        if (((zeroCoordinate) % puzzle.getEdge() > 0)) {
+            Placement.left(puzzle, res, zeroCoordinate);
+        }
+        if (zeroCoordinate + puzzle.getEdge() < puzzle.getSize()) {
+            Placement.down(puzzle, res, zeroCoordinate);
+        }
+        if (zeroCoordinate / puzzle.getEdge() > 0) {
+            Placement.up(puzzle, res, zeroCoordinate);
+        }
+        return res;
     }
 }

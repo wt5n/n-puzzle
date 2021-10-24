@@ -77,4 +77,14 @@ public class Puzzle implements Cloneable {
             throw new AssertionError();
         }
     }
+
+    public static Puzzle solve(Puzzle start, String end, String alg) {
+        switch (alg) {
+            case "A*":
+                return Algorithms.aStar(start, end);
+            default:
+                System.out.println("Not correct algo!");
+                return null;
+        }
+    }
 }
