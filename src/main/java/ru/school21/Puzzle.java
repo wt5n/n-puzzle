@@ -17,6 +17,7 @@ public class Puzzle implements Cloneable {
     final int edge;
     int g;
     int f = 0;
+    int l = 0;
     int e = 0;
     Puzzle prev;
 
@@ -29,7 +30,7 @@ public class Puzzle implements Cloneable {
     }
 
     public void setE() {
-        this.e = g + f;
+        this.e = g + f + l;
     }
 
     @Override
@@ -78,10 +79,10 @@ public class Puzzle implements Cloneable {
         }
     }
 
-    public static Puzzle solve(Puzzle start, String end, String alg) {
+    public static Puzzle solve(Puzzle start, String end, String alg, ArrayList<ArrayList<Integer>> tab_for_ln) {
         switch (alg) {
             case "A*":
-                return Algorithms.aStar(start, end);
+                return Algorithms.aStar(start, end, tab_for_ln);
             default:
                 System.out.println("Not correct algo!");
                 return null;

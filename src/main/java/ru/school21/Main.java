@@ -8,8 +8,11 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -27,13 +30,16 @@ class Main {
 //			System.out.println("Puzzle is not valid");
 //		}
 
+		long startTime = System.currentTimeMillis();
+
+
 		StringBuilder inc = new StringBuilder("");
 
 		Scanner scanner;
 		StringBuilder a = new StringBuilder();
-		String puz = getFileContent("src/main/resources/test.txt");
+		String puz = getFileContent("src/main/resources/input5.txt");
 		try {
-			scanner = new Scanner(new FileReader("src/main/resources/test.txt"));
+			scanner = new Scanner(new FileReader("src/main/resources/input5.txt"));
 			while (scanner.hasNext()) {
 				a.append(scanner.nextLine());
 				a.append(" ");
@@ -71,11 +77,34 @@ class Main {
 			r.append(i.toString());
 		}
 
-		Puzzle solution = Puzzle.solve(puzzle, r.toString(), "A*");
+//		int[][] tab_for_ln = new int[puzzle.getEdge()][puzzle.getEdge()];
+		ArrayList<ArrayList<Integer>> tab_for_ln = new ArrayList<>(puzzle.getEdge());
+		for(int i=0; i < puzzle.getEdge(); i++) {
+			tab_for_ln.add(new ArrayList());
+		}
+		for (int i = 0; i < puzzle.getEdge(); i++) {
+			int x = -puzzle.getEdge() + i;
+			for (int j = 0; j < puzzle.getEdge(); j++) {
+				x += puzzle.getEdge();
+				tab_for_ln.get(i).add(end.get(x));
+			}
+		}
+//		System.out.println(tab_for_ln.get(0).contains(9));
+
+//		int[][] tab_for_ln = new int[puzzle.getEdge()][puzzle.getEdge()];
+
+		Puzzle solution = Puzzle.solve(puzzle, "123804765", "A*", tab_for_ln);
 
 		solution.pprint();
 
 		System.out.println(solution.getG());
+
+		long endTime   = System.currentTimeMillis();
+//		long duration = (endTime - startTime)/100000000;
+		NumberFormat formatter = new DecimalFormat("#0.00000");
+
+		System.out.print("Execution time is " + formatter.format((endTime - startTime) / 1000d) + " seconds");
+
 
 		//        Puzzle p = solution;
 		//        ArrayList<ArrayList<Integer>> map = new ArrayList<>();
