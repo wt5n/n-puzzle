@@ -1,6 +1,7 @@
 package ru.school21;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 import lombok.AccessLevel;
@@ -11,8 +12,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Puzzle implements Cloneable {
 
-    ArrayList<Integer> board;
-//    final private ArrayList<Integer> end;
+    int[][] board;
     final int size;
     final int edge;
     int g;
@@ -21,9 +21,8 @@ public class Puzzle implements Cloneable {
     int e = 0;
     Puzzle prev;
 
-    public Puzzle (ArrayList<Integer> board, int size, int edge, int g) {
+    public Puzzle (int[][] board, int size, int edge, int g) {
         this.board = board;
-//        this.end = end;
         this.size = size;
         this.edge = edge;
         this.g = g;
@@ -33,33 +32,34 @@ public class Puzzle implements Cloneable {
         this.e = g + f + l;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder res = new StringBuilder();
-        for (Integer i:this.board)
-            res.append(i.toString());
-        return res.toString();
-    }
+//    @Override
+//    public String toString() {
+//        StringBuilder res = new StringBuilder();
+//        for (Integer i:this.board)
+//            res.append(i.toString());
+//        return res.toString();
+//    }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Puzzle puzzle = (Puzzle) o;
-        return Objects.equals(board, puzzle.board);
+        return Arrays.deepEquals(board, puzzle.board);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(board);
+        return Arrays.deepHashCode(board);
     }
 
     public void pprint() {
         System.out.println("-------------------");
-        for (int i = 1; i <= this.size; i++) {
-            System.out.printf("%2d ", this.getBoard().get(i - 1));
-            if (i % this.edge == 0)
-                System.out.println();
+        for (int i = 0; i < edge; i++) {
+            for (int j = 0; j < edge; j++)
+                System.out.print(board[i][j] + " ");
+            System.out.println();
         }
         System.out.println("-------------------");
     }
@@ -69,7 +69,10 @@ public class Puzzle implements Cloneable {
         try {
             Puzzle clone = (Puzzle) super.clone();
             // TODO: copy mutable state here, so the clone can't change the internals of the original
-            ArrayList<Integer> cloneBoard = new ArrayList<>(getBoard());
+            int[][] cloneBoard = new int[edge][edge];
+            for (int i = 0; i < edge; i++) {
+                System.arraycopy(getBoard()[i], 0, cloneBoard[i], 0, edge);
+            }
             clone.setBoard(cloneBoard);
 //            for (int i = 0; i < this.getSize(); i++)
 //                clone.board[i] = this.getBoard().get(i);
@@ -79,7 +82,7 @@ public class Puzzle implements Cloneable {
         }
     }
 
-    public static Puzzle solve(Puzzle start, String end, String alg, ArrayList<ArrayList<Integer>> tab_for_ln) {
+    public static Puzzle solve(Puzzle start, int[][] end, String alg, ArrayList<ArrayList<Integer>> tab_for_ln) {
         switch (alg) {
             case "A*":
                 return Algorithms.aStar(start, end, tab_for_ln);

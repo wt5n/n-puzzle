@@ -1,12 +1,13 @@
 package ru.school21;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class Algorithms {
 
-    public static Puzzle aStar(Puzzle start, String end, ArrayList<ArrayList<Integer>> tab_for_ln) {
+    public static Puzzle aStar(Puzzle start, int[][] goal, ArrayList<ArrayList<Integer>> tab_for_ln) {
 
         ArrayList<Integer> closed = new ArrayList<>(); // states already selected by the program , compared to the solution and expanded
         PriorityQueue<Puzzle> opened = new PriorityQueue<>(Comparator.comparing(Puzzle::getE));
@@ -17,69 +18,50 @@ public class Algorithms {
         opened.add(start);
         int x = 0;
         while (!opened.isEmpty()) {
-            iter++;
             Puzzle cur = opened.poll();
-            if (cur.toString().equals(end)) {
+//            cur.pprint();
+            if (Arrays.deepEquals(cur.getBoard(), goal)) {
                 System.out.println("Iterations " + iter);
                 return cur;
             }
-
-
-            if (iter == 600000) {
-                System.out.println("Here");
-            }
-//            if (opened.contains(cur))
-//                System.out.println("Here");
-//            }
-//            if (cur.toString().equals("1301113915874141265210"))
-//                System.out.println("Here");
-//            if (iter == 20000) {
-//                System.out.println("Here");
-//                opened.
-//            }
-
+            iter++;
             if (closed.contains(cur.hashCode())) {
                 continue;
             }
-
-
-
-//            cur.pprint();
-//            System.out.println(cur.getE());
-//            System.out.println(cur.getF());
-
-
-
             closed.add(cur.hashCode());
-            checkMoves(cur, tab_for_ln).stream().filter(e -> !closed.contains(e.hashCode())).forEach(opened::add);
+            checkMoves(cur, goal, tab_for_ln).stream().filter(e -> !closed.contains(e.hashCode())).forEach(opened::add);
         }
         System.out.println("There is no solution");
         return null;
     }
 
-    private static ArrayList<Puzzle> checkMoves(Puzzle puzzle, ArrayList<ArrayList<Integer>> tab_for_ln) {
+    private static ArrayList<Puzzle> checkMoves(Puzzle puzzle, int[][] goal, ArrayList<ArrayList<Integer>> tab_for_ln) {
 
         ArrayList<Puzzle> res = new ArrayList<>();
 
-//        System.out.println("****************************");
-//        puzzle.pprint();
-//        System.out.println(puzzle.getE());
-//        if (puzzle.getE() == 50)
-//            System.exit(-1);
+        int zeroCoordinateY = 0;
+        int zeroCoordinateX = 0;
+        for (int i = 0; i < puzzle.getEdge(); i++) {
+            for (int j = 0; j < puzzle.getEdge(); j++) {
+                if (puzzle.getBoard()[i][j] == 0) {
+                    zeroCoordinateY = i;
+                    zeroCoordinateX = j;
+                    break;
+                }
+            }
+        }
 
-        int zeroCoordinate = puzzle.getBoard().indexOf(0);
-
-        if (!((zeroCoordinate + 1) % puzzle.getEdge() == 0)) {
-            Placement.right(puzzle, res, zeroCoordinate, tab_for_ln);
+        if (zeroCoordinateX + 1 < puzzle.getEdge()) {
+            Placement.right(puzzle, res, goal, zeroCoordinateY, zeroCoordinateX, tab_for_ln);
         }
-        if (((zeroCoordinate) % puzzle.getEdge() > 0)) {
-            Placement.left(puzzle, res, zeroCoordinate, tab_for_ln);
+        if (zeroCoordinateX - 1 >= 0) {
+            Placement.left(puzzle, res, goal, zeroCoordinateY, zeroCoordinateX, tab_for_ln);
         }
-        if (zeroCoordinate + puzzle.getEdge() < puzzle.getSize()) {
-            Placement.down(puzzle, res, zeroCoordinate, tab_for_ln);
+        if (zeroCoordinateY + 1 < puzzle.getEdge()) {
+            Placement.down(puzzle, res, goal, zeroCoordinateY, zeroCoordinateX, tab_for_ln);
         }
-        if (zeroCoordinate / puzzle.getEdge() > 0) {
-            Placement.up(puzzle, res, zeroCoordinate, tab_for_ln);
+        if (zeroCoordinateY - 1 >= 0) {
+            Placement.up(puzzle, res, goal, zeroCoordinateY, zeroCoordinateX, tab_for_ln);
         }
         return res;
     }
