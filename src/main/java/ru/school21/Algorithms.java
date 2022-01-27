@@ -9,7 +9,8 @@ public class Algorithms {
 
     public static Puzzle aStar(Puzzle start, int[][] goal, ArrayList<ArrayList<Integer>> tab_for_ln) {
 
-        ArrayList<Integer> closed = new ArrayList<>(); // states already selected by the program , compared to the solution and expanded
+//        ArrayList<Integer> closed = new ArrayList<>(); // states already selected by the program , compared to the solution and expanded
+        ArrayList<Puzzle> closed = new ArrayList<>();
         PriorityQueue<Puzzle> opened = new PriorityQueue<>(Comparator.comparing(Puzzle::getE));
 
         int iter = 0;
@@ -25,11 +26,12 @@ public class Algorithms {
                 return cur;
             }
             iter++;
-            if (closed.contains(cur.hashCode())) {
+            if (Puzzle.hashCodePlus(closed, cur)) {
                 continue;
             }
-            closed.add(cur.hashCode());
-            checkMoves(cur, goal, tab_for_ln).stream().filter(e -> !closed.contains(e.hashCode())).forEach(opened::add);
+            closed.add(cur);
+//            Puzzle.thereIsDoubleHashCode(closed);
+            checkMoves(cur, goal, tab_for_ln).stream().filter(e -> !Puzzle.hashCodePlus(closed, e)).forEach(opened::add);
         }
         System.out.println("There is no solution");
         return null;

@@ -36,7 +36,7 @@ class Main {
 
 		long startTime = System.currentTimeMillis();
 
-		String puz = getFileContent("src/main/resources/input7.txt");
+		String puz = getFileContent("src/main/resources/input9.txt");
 		String[] sss = puz.split("\n");
 		int sizeOfArr = Integer.parseInt(sss[0]);
 		int[][] start = new int[sizeOfArr][sizeOfArr];

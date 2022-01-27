@@ -20,12 +20,14 @@ public class Puzzle implements Cloneable {
     int l = 0;
     int e = 0;
     Puzzle prev;
+    long hashCodeL;
 
-    public Puzzle (int[][] board, int size, int edge, int g) {
+    public Puzzle(int[][] board, int size, int edge, int g) {
         this.board = board;
         this.size = size;
         this.edge = edge;
         this.g = g;
+        hashCodeL = hashCodeL();
     }
 
     public void setE() {
@@ -49,9 +51,41 @@ public class Puzzle implements Cloneable {
         return Arrays.deepEquals(board, puzzle.board);
     }
 
-    @Override
-    public int hashCode() {
-        return Arrays.deepHashCode(board);
+//    @Override
+    public Long hashCodeL() {
+        long res = 0L;
+        int a = 1;
+        for (int i = 0; i < edge; i++) {
+            for (int j =0; j < edge; j++) {
+                res += (long) board[i][j] *a;
+                a++;
+            }
+        }
+        return res;
+//        return Arrays.deepHashCode(board);
+    }
+
+    static public boolean hashCodePlus(ArrayList<Puzzle> closed, Puzzle current) {
+        for (Puzzle p : closed) {
+            if (p.hashCodeL == current.hashCodeL) {
+                for (int i = 0; i < p.edge - 1; i++) {
+                    for (int j = 0; j < p.edge - 1; j++)
+                        if (p.board[i][j] != current.board[i][j]) {
+                            return false;
+                        }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static public void thereIsDoubleHashCode(ArrayList<Puzzle> closed) {
+        for (int i = 0; i < closed.size() - 1; i++) {
+            if (closed.get(i).hashCodeL == closed.get(i + 1).hashCodeL) {
+                System.out.println("GOTTA");
+            }
+        }
     }
 
     public void pprint() {

@@ -13,6 +13,7 @@ public class Placement {
 		tmp.setF(Heuristics.manhattanDistance(tmp, goal));
 		tmp.setL(Heuristics.linerConflict(tmp, tab_for_ln));
 		tmp.setE();
+		tmp.setHashCodeL(tmp.hashCodeL());
 		res.add(tmp);
 //		tmp.pprint();
 	}
@@ -26,6 +27,7 @@ public class Placement {
 		tmp.setF(Heuristics.manhattanDistance(tmp, goal));
 		tmp.setL(Heuristics.linerConflict(tmp, tab_for_ln));
 		tmp.setE();
+		tmp.setHashCodeL(tmp.hashCodeL());
 		res.add(tmp);
 //		tmp.pprint();
 	}
@@ -39,6 +41,7 @@ public class Placement {
 		tmp.setF(Heuristics.manhattanDistance(tmp, goal));
 		tmp.setL(Heuristics.linerConflict(tmp, tab_for_ln));
 		tmp.setE();
+		tmp.setHashCodeL(tmp.hashCodeL());
 		res.add(tmp);
 //		tmp.pprint();
 	}
@@ -52,6 +55,7 @@ public class Placement {
 		tmp.setF(Heuristics.manhattanDistance(tmp, goal));
 		tmp.setL(Heuristics.linerConflict(tmp, tab_for_ln));
 		tmp.setE();
+		tmp.setHashCodeL(tmp.hashCodeL());
 		res.add(tmp);
 //		tmp.pprint();
 	}
