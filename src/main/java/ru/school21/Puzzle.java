@@ -2,7 +2,7 @@ package ru.school21;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
+import java.util.Map;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -65,19 +65,26 @@ public class Puzzle implements Cloneable {
 //        return Arrays.deepHashCode(board);
     }
 
-    static public boolean hashCodePlus(ArrayList<Puzzle> closed, Puzzle current) {
-        for (Puzzle p : closed) {
-            if (p.hashCodeL == current.hashCodeL) {
-                for (int i = 0; i < p.edge - 1; i++) {
-                    for (int j = 0; j < p.edge - 1; j++)
-                        if (p.board[i][j] != current.board[i][j]) {
-                            return false;
-                        }
+    static public boolean isItInClosed(Map<Long, ArrayList<Puzzle>> closed, Puzzle current) {
+        if (closed.containsKey(current.hashCodeL)) {
+            ArrayList<Puzzle> includePuzzles = closed.get(current.hashCodeL);
+            for (Puzzle p : includePuzzles) {
+                if (isItInClosed2(p, current)) {
+                    return true;
                 }
-                return true;
             }
         }
         return false;
+    }
+
+    static private boolean isItInClosed2(Puzzle p, Puzzle current) {
+        for (int i = 0; i < p.edge - 1; i++) {
+            for (int j = 0; j < p.edge - 1; j++)
+                if (p.board[i][j] != current.board[i][j]) {
+                    return false;
+                }
+        }
+        return true;
     }
 
     static public void thereIsDoubleHashCode(ArrayList<Puzzle> closed) {
