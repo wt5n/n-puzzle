@@ -21,6 +21,7 @@ public class Puzzle implements Cloneable {
     int e = 0;
     Puzzle prev;
     long hashCodeL;
+    String direction;
 
     public Puzzle(int[][] board, int size, int edge, int g) {
         this.board = board;

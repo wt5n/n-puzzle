@@ -36,7 +36,7 @@ class Main {
 
 		long startTime = System.currentTimeMillis();
 
-		String puz = getFileContent("src/main/resources/input8.txt");
+		String puz = getFileContent("src/main/resources/input2.txt");
 		String[] sss = puz.split("\n");
 		int sizeOfArr = Integer.parseInt(sss[0]);
 		int[][] start = new int[sizeOfArr][sizeOfArr];
@@ -81,6 +81,14 @@ class Main {
 		Puzzle solution = Puzzle.solve(puzzle, get_goal(puzzle.getEdge()), "A*", tab_for_ln);
 //
 		solution.pprint();
+
+//		Puzzle p = solution;
+//		while (p.getPrev() != null) {
+//			p.pprint();
+//			System.out.println(p.getDirection());
+//			p = p.getPrev();
+//		}
+//		puzzle.pprint();
 //
 		System.out.println("g= " + solution.getG());
 //

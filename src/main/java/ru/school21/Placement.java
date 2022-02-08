@@ -14,6 +14,7 @@ public class Placement {
 		tmp.setL(Heuristics.linerConflict(tmp, tab_for_ln));
 		tmp.setE();
 		tmp.setHashCodeL(tmp.hashCodeL());
+		tmp.setDirection("UP");
 		res.add(tmp);
 //		tmp.pprint();
 	}
@@ -28,6 +29,7 @@ public class Placement {
 		tmp.setL(Heuristics.linerConflict(tmp, tab_for_ln));
 		tmp.setE();
 		tmp.setHashCodeL(tmp.hashCodeL());
+		tmp.setDirection("DOWN");
 		res.add(tmp);
 //		tmp.pprint();
 	}
@@ -42,6 +44,7 @@ public class Placement {
 		tmp.setL(Heuristics.linerConflict(tmp, tab_for_ln));
 		tmp.setE();
 		tmp.setHashCodeL(tmp.hashCodeL());
+		tmp.setDirection("LEFT");
 		res.add(tmp);
 //		tmp.pprint();
 	}
@@ -56,6 +59,7 @@ public class Placement {
 		tmp.setL(Heuristics.linerConflict(tmp, tab_for_ln));
 		tmp.setE();
 		tmp.setHashCodeL(tmp.hashCodeL());
+		tmp.setDirection("RIGHT");
 		res.add(tmp);
 //		tmp.pprint();
 	}
