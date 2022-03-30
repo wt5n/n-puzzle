@@ -57,20 +57,25 @@ public class Puzzle implements Cloneable {
         long res = 0L;
         int a = 1;
         for (int i = 0; i < edge; i++) {
-            for (int j =0; j < edge; j++) {
-                res += (long) board[i][j] *a;
-                a++;
+            for (int j = 0; j < edge; j++) {
+//                res += (long) board[i][j] * a;
+//                a++;
+                long H = ((long) (board[i][j] + board[j][i]) * (board[i][j] + board[j][i] + 1) + board[i][j]) / 2;
+                res += ((H + a) * (H + a + 1) + a) * (board[2][2] + 1);
+                a += (board[2][0] + 1);
             }
         }
         return res;
 //        return Arrays.deepHashCode(board);
     }
 
-    static public boolean isItInClosed(Map<Long, ArrayList<Puzzle>> closed, Puzzle current) {
+    // провкерка по хеш-коду, что паззл есть в closed
+    static public boolean isItInClosed(Map<Long, ArrayList<Puzzle>> closed, Puzzle current, int[][] goal) {
         if (closed.containsKey(current.hashCodeL)) {
             ArrayList<Puzzle> includePuzzles = closed.get(current.hashCodeL);
             for (Puzzle p : includePuzzles) {
-                if (isItInClosed2(p, current)) {
+                if (isEqualsByCell(p, current)) {
+//                if (Arrays.deepEquals(p.getBoard(), goal)) {
                     return true;
                 }
             }
@@ -78,9 +83,10 @@ public class Puzzle implements Cloneable {
         return false;
     }
 
-    static private boolean isItInClosed2(Puzzle p, Puzzle current) {
-        for (int i = 0; i < p.edge - 1; i++) {
-            for (int j = 0; j < p.edge - 1; j++)
+    // проверка по ячейкам, что паззл есть в closed
+    static public boolean isEqualsByCell(Puzzle p, Puzzle current) {
+        for (int i = 0; i < p.edge; i++) {
+            for (int j = 0; j < p.edge; j++)
                 if (p.board[i][j] != current.board[i][j]) {
                     return false;
                 }
@@ -124,10 +130,10 @@ public class Puzzle implements Cloneable {
         }
     }
 
-    public static Puzzle solve(Puzzle start, int[][] end, String alg, ArrayList<ArrayList<Integer>> tab_for_ln) {
+    public static Puzzle solve(Puzzle start, int[][] end, String alg) {
         switch (alg) {
             case "A*":
-                return Algorithms.aStar(start, end, tab_for_ln);
+                return Algorithms.aStar(start, end);
             default:
                 System.out.println("Not correct algo!");
                 return null;
