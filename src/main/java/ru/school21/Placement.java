@@ -4,54 +4,66 @@ import java.util.ArrayList;
 
 public class Placement {
 
-	static void up(Puzzle puzzle, ArrayList<Puzzle> res, int[][] goal, int zeroCoordinateY, int zeroCoordinateX, ArrayList<ArrayList<Integer>> tab_for_ln) {
+	static void up(Puzzle puzzle, ArrayList<Puzzle> res, int[][] goal, int zeroCoordinateY, int zeroCoordinateX) {
 		Puzzle tmp = puzzle.clone();
 		tmp.setPrev(puzzle);
 		tmp.getBoard()[zeroCoordinateY][zeroCoordinateX] = tmp.getBoard()[zeroCoordinateY - 1][zeroCoordinateX];
 		tmp.getBoard()[zeroCoordinateY - 1][zeroCoordinateX] = 0;
 		tmp.setG(puzzle.getG() + 1);
-		tmp.setF(Heuristics.manhattanDistance(tmp, goal));
-		tmp.setL(Heuristics.linerConflict(tmp, tab_for_ln));
+//		tmp.setF(Heuristics.manhattanDistance(tmp, goal));
+//		tmp.setF(Heuristics.euclideanDistance(tmp, goal));
+//		tmp.setL(Heuristics.linerConflict(tmp, goal));
 		tmp.setE();
+		tmp.setHashCodeL(tmp.hashCodeL());
+		tmp.setDirection("UP");
 		res.add(tmp);
 //		tmp.pprint();
 	}
 
-	static void down(Puzzle puzzle, ArrayList<Puzzle> res, int[][] goal, int zeroCoordinateY, int zeroCoordinateX, ArrayList<ArrayList<Integer>> tab_for_ln) {
+	static void down(Puzzle puzzle, ArrayList<Puzzle> res, int[][] goal, int zeroCoordinateY, int zeroCoordinateX) {
 		Puzzle tmp = puzzle.clone();
 		tmp.setPrev(puzzle);
 		tmp.getBoard()[zeroCoordinateY][zeroCoordinateX] = tmp.getBoard()[zeroCoordinateY + 1][zeroCoordinateX];
 		tmp.getBoard()[zeroCoordinateY + 1][zeroCoordinateX] = 0;
 		tmp.setG(puzzle.getG() + 1);
-		tmp.setF(Heuristics.manhattanDistance(tmp, goal));
-		tmp.setL(Heuristics.linerConflict(tmp, tab_for_ln));
+//		tmp.setF(Heuristics.manhattanDistance(tmp, goal));
+//		tmp.setF(Heuristics.euclideanDistance(tmp, goal));
+//		tmp.setL(Heuristics.linerConflict(tmp, goal));
 		tmp.setE();
+		tmp.setHashCodeL(tmp.hashCodeL());
+		tmp.setDirection("DOWN");
 		res.add(tmp);
 //		tmp.pprint();
 	}
 
-	static void left(Puzzle puzzle, ArrayList<Puzzle> res, int[][] goal, int zeroCoordinateY, int zeroCoordinateX, ArrayList<ArrayList<Integer>> tab_for_ln) {
+	static void left(Puzzle puzzle, ArrayList<Puzzle> res, int[][] goal, int zeroCoordinateY, int zeroCoordinateX) {
 		Puzzle tmp = puzzle.clone();
 		tmp.setPrev(puzzle);
 		tmp.getBoard()[zeroCoordinateY][zeroCoordinateX] = tmp.getBoard()[zeroCoordinateY][zeroCoordinateX - 1];
 		tmp.getBoard()[zeroCoordinateY][zeroCoordinateX - 1] = 0;
 		tmp.setG(puzzle.getG() + 1);
-		tmp.setF(Heuristics.manhattanDistance(tmp, goal));
-		tmp.setL(Heuristics.linerConflict(tmp, tab_for_ln));
+//		tmp.setF(Heuristics.manhattanDistance(tmp, goal));
+//		tmp.setF(Heuristics.euclideanDistance(tmp, goal));
+//		tmp.setL(Heuristics.linerConflict(tmp, goal));
 		tmp.setE();
+		tmp.setHashCodeL(tmp.hashCodeL());
+		tmp.setDirection("LEFT");
 		res.add(tmp);
 //		tmp.pprint();
 	}
 
-	static void right(Puzzle puzzle, ArrayList<Puzzle> res, int[][] goal, int zeroCoordinateY, int zeroCoordinateX, ArrayList<ArrayList<Integer>> tab_for_ln) {
+	static void right(Puzzle puzzle, ArrayList<Puzzle> res, int[][] goal, int zeroCoordinateY, int zeroCoordinateX) {
 		Puzzle tmp = puzzle.clone();
 		tmp.setPrev(puzzle);
 		tmp.getBoard()[zeroCoordinateY][zeroCoordinateX] = tmp.getBoard()[zeroCoordinateY][zeroCoordinateX + 1];
 		tmp.getBoard()[zeroCoordinateY][zeroCoordinateX + 1] = 0;
 		tmp.setG(puzzle.getG() + 1);
-		tmp.setF(Heuristics.manhattanDistance(tmp, goal));
-		tmp.setL(Heuristics.linerConflict(tmp, tab_for_ln));
+//		tmp.setF(Heuristics.manhattanDistance(tmp, goal));
+//		tmp.setF(Heuristics.euclideanDistance(tmp, goal));
+//		tmp.setL(Heuristics.linerConflict(tmp, goal));
 		tmp.setE();
+		tmp.setHashCodeL(tmp.hashCodeL());
+		tmp.setDirection("RIGHT");
 		res.add(tmp);
 //		tmp.pprint();
 	}

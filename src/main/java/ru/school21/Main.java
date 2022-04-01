@@ -3,17 +3,12 @@ package ru.school21;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import lombok.SneakyThrows;
@@ -22,85 +17,43 @@ class Main {
 
 	@SneakyThrows
 	public static void main(String[] args) {
-//		String str = getFileContent();
-//
-//		if (puzzle.verifyPuzzle()) {
-//			System.out.println(puzzle.solvePuzzle());
-//		} else {
-//			System.out.println("Puzzle is not valid");
-//		}
-//
-//		ArrayList<ArrayList<Integer>> arr = new ArrayList<>();
-//		System.out.println(arr.get(0).get(0));
-
 
 		long startTime = System.currentTimeMillis();
 
-		String puz = getFileContent("src/main/resources/input7.txt");
-		String[] sss = puz.split("\n");
-		int sizeOfArr = Integer.parseInt(sss[0]);
-		int[][] start = new int[sizeOfArr][sizeOfArr];
+		String[] incomingPuzzle = getFileContent("src/main/resources/input8.txt").split("\n");
+		int sizeOfArr = Integer.parseInt(incomingPuzzle[0]);
+		int[][] initialState = new int[sizeOfArr][sizeOfArr];
 		int z = 0;
-		for (String s: Arrays.copyOfRange(sss, 1, sss.length)) {
+		for (String s: Arrays.copyOfRange(incomingPuzzle, 1, incomingPuzzle.length)) {
 			for (int i = 0; i < sizeOfArr; i++) {
-				start[z][i] = Integer.parseInt(s.split(" ")[i]);
+				initialState[z][i] = Integer.parseInt(s.split(" ")[i]);
 			}
 			z++;
 		}
+		System.out.println(initialState);
 
-		System.out.println(start);
-
-		Puzzle puzzle = new Puzzle(start, sizeOfArr * sizeOfArr, sizeOfArr, 0);
+		Puzzle puzzle = new Puzzle(initialState, sizeOfArr * sizeOfArr, sizeOfArr, 0);
 		System.out.println(puzzle);
 
-		//        puzzle.getBoard().set(0, -1);
-		//        System.out.println(puzzle.getBoard());
+		int[][] goal = getGoal(puzzle.getEdge());
+		// печать финальнго состояния
+		for (int i = 0; i < goal.length; i++) {
+			for (int j = 0; j < goal.length; j++)
+				System.out.print(goal[i][j] + " ");
+			System.out.println();
+		}
 
-//		int[][] tab_for_ln = new int[puzzle.getEdge()][puzzle.getEdge()];
-		// for linearConflict
-		ArrayList<ArrayList<Integer>> tab_for_ln = new ArrayList<>(puzzle.getEdge());
-//		for(int i=0; i < puzzle.getEdge(); i++) {
-//			tab_for_ln.add(new ArrayList());
-//		}
-//		for (int i = 0; i < puzzle.getEdge(); i++) {
-//			int x = -puzzle.getEdge() + i;
-//			for (int j = 0; j < puzzle.getEdge(); j++) {
-//				x += puzzle.getEdge();
-//				tab_for_ln.get(i).add(end.get(x));
-//			}
-//		}
-//		System.out.println(tab_for_ln.get(0).contains(9));
-
-
-		Puzzle solution = Puzzle.solve(puzzle, get_goal(puzzle.getEdge()), "A*", tab_for_ln);
-//
+		Puzzle solution = Puzzle.solve(puzzle, goal, "A*");
 		solution.pprint();
-//
+
 		System.out.println("g= " + solution.getG());
-//
 		long endTime   = System.currentTimeMillis();
 		NumberFormat formatter = new DecimalFormat("#0.00000");
-//
 		System.out.print("Execution time is " + formatter.format((endTime - startTime) / 1000d) + " seconds");
-
-
-//		        Puzzle p = solution;
-//		        ArrayList<ArrayList<Integer>> map = new ArrayList<>();
-//		        map.add(p.getBoard());
-//		//        System.out.println(p.getBoard());
-//		        while (p.getPrev() != null) {
-//		//            System.out.println(p.getBoard());
-//		            map.add(p.getBoard());
-//		            p = p.getPrev();
-//		        }
-//
-//		        System.out.println(puzzle.getBoard());
-//		        for (int i = map.size() - 1; i > 0; i--) {
-//		            System.out.println(map.get(i));
-//		        }
 	}
 
-	static int[][] get_goal(int edge) {
+	// функция генерации финального положения пазла
+	static int[][] getGoal(int edge) {
 		int[][] arr = new int[edge][edge];
 		int top = 0;
 		int bottom = edge - 1;

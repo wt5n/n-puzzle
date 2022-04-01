@@ -2,7 +2,7 @@ package ru.school21;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
+import java.util.Map;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -20,12 +20,15 @@ public class Puzzle implements Cloneable {
     int l = 0;
     int e = 0;
     Puzzle prev;
+    long hashCodeL;
+    String direction;
 
-    public Puzzle (int[][] board, int size, int edge, int g) {
+    public Puzzle(int[][] board, int size, int edge, int g) {
         this.board = board;
         this.size = size;
         this.edge = edge;
         this.g = g;
+        hashCodeL = hashCodeL();
     }
 
     public void setE() {
@@ -49,9 +52,54 @@ public class Puzzle implements Cloneable {
         return Arrays.deepEquals(board, puzzle.board);
     }
 
-    @Override
-    public int hashCode() {
-        return Arrays.deepHashCode(board);
+//    @Override
+    public Long hashCodeL() {
+        long res = 0L;
+        int a = 1;
+        for (int i = 0; i < edge; i++) {
+            for (int j = 0; j < edge; j++) {
+//                res += (long) board[i][j] * a;
+//                a++;
+                long H = ((long) (board[i][j] + board[j][i]) * (board[i][j] + board[j][i] + 1) + board[i][j]) / 2;
+                res += ((H + a) * (H + a + 1) + a) * (board[2][2] + 1);
+                a += (board[2][0] + 1);
+            }
+        }
+        return res;
+//        return Arrays.deepHashCode(board);
+    }
+
+    // провкерка по хеш-коду, что паззл есть в closed
+    static public boolean isItInClosed(Map<Long, ArrayList<Puzzle>> closed, Puzzle current, int[][] goal) {
+        if (closed.containsKey(current.hashCodeL)) {
+            ArrayList<Puzzle> includePuzzles = closed.get(current.hashCodeL);
+            for (Puzzle p : includePuzzles) {
+                if (isEqualsByCell(p, current)) {
+//                if (Arrays.deepEquals(p.getBoard(), goal)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // проверка по ячейкам, что паззл есть в closed
+    static public boolean isEqualsByCell(Puzzle p, Puzzle current) {
+        for (int i = 0; i < p.edge; i++) {
+            for (int j = 0; j < p.edge; j++)
+                if (p.board[i][j] != current.board[i][j]) {
+                    return false;
+                }
+        }
+        return true;
+    }
+
+    static public void thereIsDoubleHashCode(ArrayList<Puzzle> closed) {
+        for (int i = 0; i < closed.size() - 1; i++) {
+            if (closed.get(i).hashCodeL == closed.get(i + 1).hashCodeL) {
+                System.out.println("GOTTA");
+            }
+        }
     }
 
     public void pprint() {
@@ -82,10 +130,10 @@ public class Puzzle implements Cloneable {
         }
     }
 
-    public static Puzzle solve(Puzzle start, int[][] end, String alg, ArrayList<ArrayList<Integer>> tab_for_ln) {
+    public static Puzzle solve(Puzzle start, int[][] end, String alg) {
         switch (alg) {
             case "A*":
-                return Algorithms.aStar(start, end, tab_for_ln);
+                return Algorithms.aStar(start, end);
             default:
                 System.out.println("Not correct algo!");
                 return null;
