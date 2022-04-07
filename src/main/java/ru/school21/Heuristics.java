@@ -2,6 +2,10 @@ package ru.school21;
 
 import java.util.ArrayList;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Heuristics {
 
     public static int manhattanDistance(Puzzle puzzle, int[][] goal) {
@@ -32,7 +36,7 @@ public class Heuristics {
         int edge = puzzle.getEdge();
         int[][] board = puzzle.getBoard();
         boolean flag;
-        ArrayList<Integer> correctLine = new ArrayList<>();
+        ArrayList<Integer> correctLine;
         // by lines
         for (int e = 0; e < edge; e++) {
             correctLine = getCorrectLineForLinerConflict(goal, e, true);

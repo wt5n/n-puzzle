@@ -3,8 +3,10 @@ package ru.school21;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
@@ -22,6 +24,7 @@ public class Puzzle implements Cloneable {
     Puzzle prev;
     long hashCodeL;
     String direction;
+
 
     public Puzzle(int[][] board, int size, int edge, int g) {
         this.board = board;
@@ -52,6 +55,7 @@ public class Puzzle implements Cloneable {
         return Arrays.deepEquals(board, puzzle.board);
     }
 
+
 //    @Override
     public Long hashCodeL() {
         long res = 0L;
@@ -70,7 +74,7 @@ public class Puzzle implements Cloneable {
     }
 
     // провкерка по хеш-коду, что паззл есть в closed
-    static public boolean isItInClosed(Map<Long, ArrayList<Puzzle>> closed, Puzzle current, int[][] goal) {
+    public static boolean isItInClosed(Map<Long, ArrayList<Puzzle>> closed, Puzzle current, int[][] goal) {
         if (closed.containsKey(current.hashCodeL)) {
             ArrayList<Puzzle> includePuzzles = closed.get(current.hashCodeL);
             for (Puzzle p : includePuzzles) {
@@ -84,17 +88,13 @@ public class Puzzle implements Cloneable {
     }
 
     // проверка по ячейкам, что паззл есть в closed
-    static public boolean isEqualsByCell(Puzzle p, Puzzle current) {
-        for (int i = 0; i < p.edge; i++) {
-            for (int j = 0; j < p.edge; j++)
-                if (p.board[i][j] != current.board[i][j]) {
-                    return false;
-                }
-        }
-        return true;
+    public static boolean isEqualsByCell(Puzzle p, Puzzle current) {
+        return IntStream.range(0, p.edge)
+                .noneMatch(i -> IntStream.range(0, p.edge)
+                        .anyMatch(j -> p.board[i][j] != current.board[i][j]));
     }
 
-    static public void thereIsDoubleHashCode(ArrayList<Puzzle> closed) {
+    public static void thereIsDoubleHashCode(ArrayList<Puzzle> closed) {
         for (int i = 0; i < closed.size() - 1; i++) {
             if (closed.get(i).hashCodeL == closed.get(i + 1).hashCodeL) {
                 System.out.println("GOTTA");
@@ -130,13 +130,39 @@ public class Puzzle implements Cloneable {
         }
     }
 
-    public static Puzzle solve(Puzzle start, int[][] end, String alg) {
-        switch (alg) {
-            case "A*":
-                return Algorithms.aStar(start, end);
-            default:
-                System.out.println("Not correct algo!");
-                return null;
+    public static Puzzle solve(Puzzle start, int[][] end, Algos alg) {
+        if (alg.equals(Algos.A_STAR)) {
+            return Algorithms.aStar(start, end);
+        } else
+         throw new NotFoundException("No implementation for this algorithm");
+    }
+
+    // функция генерации финального положения пазла
+    static int[][] getGoal(int edge) {
+        int[][] arr = new int[edge][edge];
+        int top = 0;
+        int bottom = edge - 1;
+        int left = 0;
+        int right = edge - 1;
+        int z = 0;
+        while (true) {
+            if (left > right)
+                break;
+            for (int i = left; i <= right; i++)
+                arr[top][i] = ++z == edge * edge? 0: z;
+            if (top > bottom)
+                break;
+            top++;
+            for (int i = top; i <= bottom; i++)
+                arr[i][right] = ++z == edge * edge? 0: z;
+            right--;
+            for (int i = right; i >= left; i--)
+                arr[bottom][i] = ++z == edge * edge? 0: z;
+            bottom--;
+            for (int i = bottom; i >= top; i--)
+                arr[i][left] = ++z == edge * edge? 0: z;
+            left++;
         }
+        return arr;
     }
 }
