@@ -2,6 +2,7 @@ package ru.school21;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+
 import lombok.SneakyThrows;
 
 class Main {
@@ -9,28 +10,33 @@ class Main {
 	@SneakyThrows
 	public static void main(String[] args) {
 
-		long startTime = System.currentTimeMillis();
-
+		checkFlags(args);
 		String path = "src/main/resources/input5.txt";
 
-		Puzzle puzzle = Validator.validate(path);
-		System.out.println(puzzle.getBoard());
-
-		int[][] goal = Puzzle.getGoal(puzzle.getEdge());
-		// печать финального состояния
-		for (int[] ints : goal) {
-			for (int j = 0; j < goal.length; j++) {
-				System.out.print(ints[j] + " ");
-			}
-			System.out.println();
-		}
-
-		Puzzle solution = Puzzle.solve(puzzle, goal, Algos.A_STAR);
-		solution.pprint();
-
+		String[] strPuzzle = PuzzleUtil.getPuzzleFromFilePath(path);
+		Puzzle puzzle = PuzzleUtil.validate(strPuzzle);
+		//		if (PuzzleUtil.isSolvable(puzzle)) {
+		Puzzle solution = PuzzleUtil.solve(puzzle, AlgoTypes.A_STAR);
+		puzzle.printBoard();
+		puzzle.printGoal();
 		System.out.println("g= " + solution.getG());
-		long endTime = System.currentTimeMillis();
+		//		}
 		NumberFormat formatter = new DecimalFormat("#0.00000");
-		System.out.print("Execution time is " + formatter.format((endTime - startTime) / 1000d) + " seconds");
+		System.out.print(
+				"Execution time is " + formatter.format((System.currentTimeMillis() - NPuzzleFlags.startTime) / 1000d) +
+						" seconds");
+	}
+
+	private static void checkFlags(String[] args) {
+		for (String s : args) {
+			if (NPuzzleFlags.path != null && s.matches(".{3,}")) {
+				NPuzzleFlags.path = s;
+			}
+			NPuzzleFlags.startTime = System.currentTimeMillis();
+			NPuzzleFlags.euclide = s.equals("-e");
+			NPuzzleFlags.manhattan = s.equals("-m");
+			NPuzzleFlags.linearConflict = s.equals("-l");
+			NPuzzleFlags.help = s.equals("-h");
+		}
 	}
 }

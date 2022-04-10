@@ -8,17 +8,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Heuristics {
 
-    public static int manhattanDistance(Puzzle puzzle, int[][] goal) {
-//        puzzle.pprint();
+    public static int manhattanDistance(Puzzle puzzle) {
         int res = 0;
         for (int y1 = 0; y1 < puzzle.getEdge(); y1++) {
             for (int x1 = 0; x1 < puzzle.getEdge(); x1++) {
-                if (puzzle.getBoard()[y1][x1] == 0)
+                if (puzzle.getBoard()[y1][x1] == 0) {
                     continue;
-//                System.out.print(puzzle.getBoard()[y1][x1] + " ");
+                }
                 for (int y2 = 0; y2 < puzzle.getEdge(); y2++) {
                     for (int x2 = 0; x2 < puzzle.getEdge(); x2++) {
-                        if (puzzle.getBoard()[y1][x1] == goal[y2][x2]) {
+                        if (puzzle.getBoard()[y1][x1] == Puzzle.goal[y2][x2]) {
                             res += Math.abs(y2 - y1) + Math.abs(x2 - x1);
                             break;
                         }
@@ -29,8 +28,8 @@ public class Heuristics {
         return res;
     }
 
-    public static int linerConflict(Puzzle puzzle, int[][] goal) {
-//        puzzle.pprint();
+    public static int linerConflict(Puzzle puzzle) {
+        //        puzzle.pprint();
         int res = 0;
 
         int edge = puzzle.getEdge();
@@ -39,7 +38,7 @@ public class Heuristics {
         ArrayList<Integer> correctLine;
         // by lines
         for (int e = 0; e < edge; e++) {
-            correctLine = getCorrectLineForLinerConflict(goal, e, true);
+            correctLine = getCorrectLineForLinerConflict(Puzzle.goal, e, true);
             flag = false;
             for (int i = 0; i < edge - 1 && !flag; i++) {
                 for (int j = i + 1; j < edge && !flag; j++) {
@@ -102,16 +101,17 @@ public class Heuristics {
         return correctLine;
     }
 
-    public static int euclideanDistance(Puzzle puzzle, int[][] goal) {
+    public static int euclideanDistance(Puzzle puzzle) {
         int res = 0;
         for (int y1 = 0; y1 < puzzle.getEdge(); y1++) {
             for (int x1 = 0; x1 < puzzle.getEdge(); x1++) {
-                if (puzzle.getBoard()[y1][x1] == 0)
+                if (puzzle.getBoard()[y1][x1] == 0) {
                     continue;
-//                System.out.print(puzzle.getBoard()[y1][x1] + " ");
+                }
+                //                System.out.print(puzzle.getBoard()[y1][x1] + " ");
                 for (int y2 = 0; y2 < puzzle.getEdge(); y2++) {
                     for (int x2 = 0; x2 < puzzle.getEdge(); x2++) {
-                        if (puzzle.getBoard()[y1][x1] == goal[y2][x2]) {
+                        if (puzzle.getBoard()[y1][x1] == Puzzle.goal[y2][x2]) {
                             res += Math.round(Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)));
                             break;
                         }

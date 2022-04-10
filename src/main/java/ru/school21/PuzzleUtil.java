@@ -16,71 +16,73 @@ import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Validator {
+public class PuzzleUtil {
 
 	static ArrayList<String> res = new ArrayList<>();
 	static int size = 0;
 
-	static Puzzle validate(String path) {
-		String[] puz = check(getFileContent(path).split("\n"));
+	public static Puzzle validate(String[] puz) {
+		String[] correctPuzzle = check(puz);
 		int[][] initialState = new int[size][size];
 		int z = 0;
-		for (String s : puz) {
+		for (String s : correctPuzzle) {
 			for (int i = 0; i < size; i++) {
 				initialState[z][i] = Integer.parseInt(s.split(" ")[i]);
 			}
 			z++;
 		}
-		int[][] goal = Puzzle.getGoal(size);
-		if (isSolvable(initialState, goal)) {
-			return new Puzzle(initialState, size*size, size, 0);
-		}
-		throw new RuntimeException("Unsolvable");
+		Puzzle.goal = Puzzle.calculateGoal(size);
+		return new Puzzle(initialState, size * size, size, 0);
 	}
 
+	public static boolean isSolvable(Puzzle puzzle) {
 
-	public static boolean isSolvable(int[][] puzzle, int[][] goal) {
+		int puzzleInv = getInv(puzzle.getBoard());
+		int goalInv = getInv(Puzzle.goal);
 
-		int puzzleInv = getInv(puzzle);
-		int goalInv = getInv(goal);
-
-//		if (size % 2 == 0) { // even grid
-//			if (blankRow % 2 == 0) { // blank on odd row; counting from bottom
-//				return parity % 2 == 0;
-//			} else { // blank on even row; counting from bottom
-//				return parity % 2 != 0;
-//			}
-//		} else { // odd grid
+		//		if (size % 2 == 0) { // even grid
+		//			if (blankRow % 2 == 0) { // blank on odd row; counting from bottom
+		//				return parity % 2 == 0;
+		//			} else { // blank on even row; counting from bottom
+		//				return parity % 2 != 0;
+		//			}
+		//		} else { // odd grid
 		return puzzleInv % 2 == goalInv % 2;
-//		}
+		//		}
+	}
+
+	public static Puzzle solve(Puzzle puzzle, AlgoTypes alg) {
+		if (alg.equals(AlgoTypes.A_STAR)) {
+			return Algorithms.aStar(puzzle);
+		} else {
+			throw new NotFoundException("No implementation for this algorithm");
+		}
+	}
+
+	@SneakyThrows
+	public static String[] getPuzzleFromFilePath(String filePath) {
+		InputStream inputStream = new ByteArrayInputStream(new FileInputStream(filePath).readAllBytes());
+
+		return (new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines()
+				.collect(Collectors.joining("\n"))).split("\n");
 	}
 
 	private static int getInv(int[][] arr) {
 		int[] puzzle = Stream.of(arr).flatMapToInt(IntStream::of).toArray();
 		int parity = 0;
 
-		for (int i = 0; i < puzzle.length; i++)
-		{
+		for (int i = 0; i < puzzle.length; i++) {
 			if (puzzle[i] == 0) {
 				continue;
 			}
-			for (int j = i + 1; j < puzzle.length; j++)
-			{
-				if (puzzle[i] > puzzle[j] && puzzle[j] != 0)
-				{
+			for (int j = i + 1; j < puzzle.length; j++) {
+				if (puzzle[i] > puzzle[j] && puzzle[j] != 0) {
 					parity++;
 				}
 			}
 		}
 		return parity;
 	}
-
-//	static boolean isSolvable(int[][] puzzle) {
-//		return  (size % 2 == 1 && getInvCount(puzzle) % 2 == 0) ||
-//				(size % 2 == 0 && getInvCount(puzzle) % 2 == 0 && getXPosition(puzzle) % 2 == 1) ||
-//				(size % 2 == 0 && getInvCount(puzzle) % 2 == 1 && getXPosition(puzzle) % 2 == 0);
-//	}
-
 
 	static int getXPosition(int[][] puzzle) {
 		for (int i = 0; i < size; i++) {
@@ -128,13 +130,5 @@ public class Validator {
 		} else {
 			throw new RuntimeException("Mda");
 		}
-	}
-
-	@SneakyThrows
-	private static String getFileContent(String filePath) {
-		InputStream inputStream = new ByteArrayInputStream(new FileInputStream(filePath).readAllBytes());
-
-		return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines()
-				.collect(Collectors.joining("\n"));
 	}
 }

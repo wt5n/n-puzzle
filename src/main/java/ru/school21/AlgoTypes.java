@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum Algos {
+public enum AlgoTypes {
 	A_STAR("A*");
 
 	final String name;

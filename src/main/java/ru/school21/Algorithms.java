@@ -14,16 +14,16 @@ import static ru.school21.Puzzle.isEqualsByCell;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Algorithms {
 
-	public static Puzzle aStar(Puzzle start, int[][] goal) {
+	public static Puzzle aStar(Puzzle start) {
 
 		Map<Long, ArrayList<Puzzle>> closed = new HashMap<>();
 		PriorityQueue<Puzzle> opened = new PriorityQueue<>(Comparator.comparing(Puzzle::getE));
 
 		int iter = 0;
-		start.pprint();
+		start.printBoard();
 		opened.add(start);
 
-		Puzzle goalPuzzle = new Puzzle(goal, start.getEdge() * start.getEdge(), start.getEdge(), 0);
+		Puzzle goalPuzzle = new Puzzle(Puzzle.goal, start.getEdge() * start.getEdge(), start.getEdge(), 0);
 
 		while (!opened.isEmpty()) {
 			Puzzle cur = opened.poll();
@@ -36,11 +36,11 @@ public class Algorithms {
 			if (iter == 4909) {
 				System.out.println("here");
 			}
-			if (Puzzle.isItInClosed(closed, cur, goal)) {
+			if (Puzzle.isItInClosed(closed, cur)) {
 				continue;
 			}
 			addInClosed(closed, cur);
-			checkMoves(cur, goal).stream().filter(e -> !Puzzle.isItInClosed(closed, e, goal)).forEach(opened::add);
+			checkMoves(cur).stream().filter(e -> !Puzzle.isItInClosed(closed, e)).forEach(opened::add);
 		}
 		System.out.println(
 				"Iterations " + iter + "\n" + "closed size = " + closed.size() + "\n" + "There is no solution");
@@ -62,7 +62,7 @@ public class Algorithms {
 		//        closed.put(cur.getHashCodeL(), p);
 	}
 
-	private static ArrayList<Puzzle> checkMoves(Puzzle puzzle, int[][] goal) {
+	private static ArrayList<Puzzle> checkMoves(Puzzle puzzle) {
 
 		ArrayList<Puzzle> res = new ArrayList<>();
 
@@ -79,16 +79,16 @@ public class Algorithms {
 		}
 
 		if (x + 1 < puzzle.getEdge()) {
-			Placement.right(puzzle, res, goal, y, x);
+			res.add(Movements.right(puzzle, y, x));
 		}
 		if (x - 1 >= 0) {
-			Placement.left(puzzle, res, goal, y, x);
+			res.add(Movements.left(puzzle, y, x));
 		}
 		if (y + 1 < puzzle.getEdge()) {
-			Placement.down(puzzle, res, goal, y, x);
+			res.add(Movements.down(puzzle, y, x));
 		}
 		if (y - 1 >= 0) {
-			Placement.up(puzzle, res, goal, y, x);
+			res.add(Movements.up(puzzle, y, x));
 		}
 		return res;
 	}
