@@ -8,4 +8,5 @@ public class NPuzzleFlags {
 	static boolean linearConflict;
 	static boolean euclide;
 	static boolean help;
+	static boolean sequence;
 }

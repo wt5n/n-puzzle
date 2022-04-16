@@ -7,9 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
@@ -27,7 +26,11 @@ public class PuzzleUtil {
 		int z = 0;
 		for (String s : correctPuzzle) {
 			for (int i = 0; i < size; i++) {
-				initialState[z][i] = Integer.parseInt(s.split(" ")[i]);
+				int x = Integer.parseInt(s.split(" ")[i]);
+				if (x >= size * size || x < 0) {
+					throw new RuntimeException("Значение пазла больше максимально возможного или отрицательное");
+				}
+				initialState[z][i] = x;
 			}
 			z++;
 		}
@@ -37,18 +40,10 @@ public class PuzzleUtil {
 
 	public static boolean isSolvable(Puzzle puzzle) {
 
-		int puzzleInv = getInv(puzzle.getBoard());
-		int goalInv = getInv(Puzzle.goal);
+		int puzzleInv = getInv(puzzle.getBoard(), puzzle.getEdge());
+		int goalInv = getInv(Puzzle.goal, puzzle.getEdge());
 
-		//		if (size % 2 == 0) { // even grid
-		//			if (blankRow % 2 == 0) { // blank on odd row; counting from bottom
-		//				return parity % 2 == 0;
-		//			} else { // blank on even row; counting from bottom
-		//				return parity % 2 != 0;
-		//			}
-		//		} else { // odd grid
 		return puzzleInv % 2 == goalInv % 2;
-		//		}
 	}
 
 	public static Puzzle solve(Puzzle puzzle, AlgoTypes alg) {
@@ -67,16 +62,16 @@ public class PuzzleUtil {
 				.collect(Collectors.joining("\n"))).split("\n");
 	}
 
-	private static int getInv(int[][] arr) {
-		int[] puzzle = Stream.of(arr).flatMapToInt(IntStream::of).toArray();
+	private static int getInv(int[][] arr, int edge) {
+		List<Integer> puzzle = convertSnail2DArrayToArray(arr, edge);
 		int parity = 0;
 
-		for (int i = 0; i < puzzle.length; i++) {
-			if (puzzle[i] == 0) {
+		for (int i = puzzle.size() - 1; i >= 1; i--) {
+			if (puzzle.get(i) == 0) {
 				continue;
 			}
-			for (int j = i + 1; j < puzzle.length; j++) {
-				if (puzzle[i] > puzzle[j] && puzzle[j] != 0) {
+			for (int j = i - 1; j >= 0; j--) {
+				if (puzzle.get(j) != 0 && puzzle.get(i) < puzzle.get(j)) {
 					parity++;
 				}
 			}
@@ -84,27 +79,51 @@ public class PuzzleUtil {
 		return parity;
 	}
 
-	static int getXPosition(int[][] puzzle) {
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				if (puzzle[i][j] == 0)
-					return i;
+	private static List<Integer> convertSnail2DArrayToArray(int[][] arr, int edge) {
+		List<Integer> res = new ArrayList<>();
+		int top = 0;
+		int bottom = edge - 1;
+		int left = 0;
+		int right = edge - 1;
+		int z = 0;
+		while (true) {
+			if (left > right) {
+				break;
 			}
+			for (int i = left; i <= right; i++) {
+				res.add(arr[top][i]);
+			}
+			if (top > bottom) {
+				break;
+			}
+			top++;
+			for (int i = top; i <= bottom; i++) {
+				res.add(arr[i][right]);
+			}
+			right--;
+			for (int i = right; i >= left; i--) {
+				res.add(arr[bottom][i]);
+			}
+			bottom--;
+			for (int i = bottom; i >= top; i--) {
+				res.add(arr[i][left]);
+			}
+			left++;
 		}
-		throw new RuntimeException("");
+		return res;
 	}
 
 	private static String[] check(String[] puzzle) {
 		for (String s : puzzle) {
-			if (s.matches("[0-9]")) {
+			if (s.matches("\\d")) {
 				setSize(puzzle, s);
 			} else if (s.startsWith("#") || s.isEmpty()) {
-			} else if (s.matches("[0-9 ]+")) {
+			} else if (s.matches("[\\d ]+")) {
 				addString(puzzle, s);
 			} else if (s.contains("#")) {
 				addString(puzzle, s.substring(0, s.indexOf("#")));
 			} else {
-				throw new NotFoundException("Какой то конченный аргумент");
+				throw new NotFoundException("Файл не прошёл проверку");
 			}
 		}
 		String[] result = new String[size];
@@ -128,7 +147,7 @@ public class PuzzleUtil {
 		} else if (size == 0) {
 			setSize(puzzle, s);
 		} else {
-			throw new RuntimeException("Mda");
+			throw new RuntimeException("Неверный размер пазла");
 		}
 	}
 }

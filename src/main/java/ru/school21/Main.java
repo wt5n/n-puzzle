@@ -11,16 +11,22 @@ class Main {
 	public static void main(String[] args) {
 
 		checkFlags(args);
-		String path = "src/main/resources/input5.txt";
+		if (NPuzzleFlags.help || args.length < 1) {
+			System.out.println("How to use: -[flags] [pathToFile] \n" + "-h - help\n" + "-e - euclidean distance\n" +
+					"-m - manhattan distance\n" + "-l - linear conflict\n" +
+					"If there is no flag Greedy search will be used");
+			System.exit(1);
+		}
 
-		String[] strPuzzle = PuzzleUtil.getPuzzleFromFilePath(path);
+		String[] strPuzzle = PuzzleUtil.getPuzzleFromFilePath(NPuzzleFlags.path);
 		Puzzle puzzle = PuzzleUtil.validate(strPuzzle);
-		//		if (PuzzleUtil.isSolvable(puzzle)) {
-		Puzzle solution = PuzzleUtil.solve(puzzle, AlgoTypes.A_STAR);
-		puzzle.printBoard();
-		puzzle.printGoal();
-		System.out.println("g= " + solution.getG());
-		//		}
+		if (PuzzleUtil.isSolvable(puzzle)) {
+			Puzzle solution = PuzzleUtil.solve(puzzle, AlgoTypes.A_STAR);
+			System.out.println("Number of moves = " + solution.getG());
+		} else {
+			System.out.println("Unsolvable");
+			System.exit(-1);
+		}
 		NumberFormat formatter = new DecimalFormat("#0.00000");
 		System.out.print(
 				"Execution time is " + formatter.format((System.currentTimeMillis() - NPuzzleFlags.startTime) / 1000d) +
@@ -29,14 +35,23 @@ class Main {
 
 	private static void checkFlags(String[] args) {
 		for (String s : args) {
-			if (NPuzzleFlags.path != null && s.matches(".{3,}")) {
+			if (NPuzzleFlags.path == null && s.matches(".{3,}")) {
 				NPuzzleFlags.path = s;
+				NPuzzleFlags.sequence = true;
 			}
 			NPuzzleFlags.startTime = System.currentTimeMillis();
-			NPuzzleFlags.euclide = s.equals("-e");
-			NPuzzleFlags.manhattan = s.equals("-m");
-			NPuzzleFlags.linearConflict = s.equals("-l");
-			NPuzzleFlags.help = s.equals("-h");
+			if (s.equals("-e")) {
+				NPuzzleFlags.euclide = true;
+			}
+			if (s.equals("-m")) {
+				NPuzzleFlags.manhattan = true;
+			}
+			if (s.equals("-l")) {
+				NPuzzleFlags.linearConflict = true;
+			}
+			if (s.equals("-h")) {
+				NPuzzleFlags.help = true;
+			}
 		}
 	}
 }

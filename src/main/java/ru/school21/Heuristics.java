@@ -29,41 +29,25 @@ public class Heuristics {
     }
 
     public static int linerConflict(Puzzle puzzle) {
-        //        puzzle.pprint();
         int res = 0;
 
         int edge = puzzle.getEdge();
         int[][] board = puzzle.getBoard();
         boolean flag;
         ArrayList<Integer> correctLine;
-        // by lines
         for (int e = 0; e < edge; e++) {
             correctLine = getCorrectLineForLinerConflict(Puzzle.goal, e, true);
             flag = false;
             for (int i = 0; i < edge - 1 && !flag; i++) {
                 for (int j = i + 1; j < edge && !flag; j++) {
-                    if ((i != edge - 1 && j != edge - 1) // skip right down corner
-                         && thereIsConflict(board[e][i], board[e][j], correctLine, board[e])) {
+                    if ((i != edge - 1 && j != edge - 1) &&
+                            thereIsConflict(board[e][i], board[e][j], correctLine, board[e])) {
                         res += 2;
                         flag = true;
                     }
                 }
             }
         }
-        // by columns
-//        for (int e = 0; e < edge; e++) {
-//            correctLine = getCorrectLineForLinerConflict(goal, e, false);
-//            flag = false;
-//            for (int i = 0; i < edge - 1 && !flag; i++) {
-//                for (int j = i + 1; j < edge && !flag; j++) {
-//                    if ((i != edge - 1 && j != edge - 1) // skip right down corner
-//                            && thereIsConflict(board[i][e], board[j][e], correctLine, board[i])) {
-//                        res += 2;
-//                        flag = true;
-//                    }
-//                }
-//            }
-//        }
         return res;
     }
 
@@ -108,7 +92,6 @@ public class Heuristics {
                 if (puzzle.getBoard()[y1][x1] == 0) {
                     continue;
                 }
-                //                System.out.print(puzzle.getBoard()[y1][x1] + " ");
                 for (int y2 = 0; y2 < puzzle.getEdge(); y2++) {
                     for (int x2 = 0; x2 < puzzle.getEdge(); x2++) {
                         if (puzzle.getBoard()[y1][x1] == Puzzle.goal[y2][x2]) {

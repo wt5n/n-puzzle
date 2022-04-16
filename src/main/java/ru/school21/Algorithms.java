@@ -20,7 +20,6 @@ public class Algorithms {
 		PriorityQueue<Puzzle> opened = new PriorityQueue<>(Comparator.comparing(Puzzle::getE));
 
 		int iter = 0;
-		start.printBoard();
 		opened.add(start);
 
 		Puzzle goalPuzzle = new Puzzle(Puzzle.goal, start.getEdge() * start.getEdge(), start.getEdge(), 0);
@@ -28,38 +27,33 @@ public class Algorithms {
 		while (!opened.isEmpty()) {
 			Puzzle cur = opened.poll();
 			if (isEqualsByCell(cur, goalPuzzle)) {
+				if (NPuzzleFlags.sequence) {
+					Puzzle.printSeq(cur);
+					System.out.println();
+				}
 				System.out.println("Iterations " + iter);
+				System.out.println("opened size = " + opened.size());
 				System.out.println("closed size = " + closed.size());
 				return cur;
 			}
 			iter++;
-			if (iter == 4909) {
-				System.out.println("here");
-			}
 			if (Puzzle.isItInClosed(closed, cur)) {
 				continue;
 			}
 			addInClosed(closed, cur);
 			checkMoves(cur).stream().filter(e -> !Puzzle.isItInClosed(closed, e)).forEach(opened::add);
 		}
-		System.out.println(
-				"Iterations " + iter + "\n" + "closed size = " + closed.size() + "\n" + "There is no solution");
 		return null;
 	}
 
 	private static void addInClosed(Map<Long, ArrayList<Puzzle>> closed, Puzzle cur) {
 		if (closed.containsKey(cur.getHashCodeL())) {
-			//            System.out.println("A");
 			closed.get(cur.getHashCodeL()).add(cur);
-			//            System.out.println("B");
 		} else {
 			ArrayList<Puzzle> p = new ArrayList<>();
 			p.add(cur);
 			closed.put(cur.getHashCodeL(), p);
 		}
-		//        ArrayList<Puzzle> p = new ArrayList<>();
-		//        p.add(cur);
-		//        closed.put(cur.getHashCodeL(), p);
 	}
 
 	private static ArrayList<Puzzle> checkMoves(Puzzle puzzle) {

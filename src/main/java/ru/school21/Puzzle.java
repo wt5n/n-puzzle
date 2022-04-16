@@ -50,13 +50,11 @@ public class Puzzle implements Cloneable {
         return res;
     }
 
-    // провкерка по хеш-коду, что паззл есть в closed
     public static boolean isItInClosed(Map<Long, ArrayList<Puzzle>> closed, Puzzle current) {
         if (closed.containsKey(current.hashCodeL)) {
             ArrayList<Puzzle> includePuzzles = closed.get(current.hashCodeL);
             for (Puzzle p : includePuzzles) {
                 if (isEqualsByCell(p, current)) {
-                    //                if (Arrays.deepEquals(p.getBoard(), goal)) {
                     return true;
                 }
             }
@@ -133,6 +131,15 @@ public class Puzzle implements Cloneable {
                 System.out.print(ints[j] + " ");
             }
             System.out.println();
+        }
+    }
+
+    public static void printSeq(Puzzle puzzle) {
+        if (puzzle.prev != null) {
+            printSeq(puzzle.prev);
+        }
+        if (puzzle.direction != null) {
+            System.out.printf("%s ", puzzle.direction);
         }
     }
 }

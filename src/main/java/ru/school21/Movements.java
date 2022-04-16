@@ -58,9 +58,15 @@ public class Movements {
 		tmp.setPrev(puzzle);
 		tmp.setG(puzzle.getG() + 1);
 		tmp.setE();
-		tmp.setF(Heuristics.manhattanDistance(tmp));
-		//		tmp.setF(Heuristics.euclideanDistance(tmp, goal));
-		tmp.setL(Heuristics.linerConflict(tmp));
+		if (NPuzzleFlags.manhattan) {
+			tmp.setF(Heuristics.manhattanDistance(tmp));
+		}
+		if (NPuzzleFlags.euclide) {
+			tmp.setF(Heuristics.euclideanDistance(tmp));
+		}
+		if (NPuzzleFlags.linearConflict) {
+			tmp.setL(Heuristics.linerConflict(tmp));
+		}
 		tmp.setHashCodeL(tmp.hashCodeL());
 	}
 }
